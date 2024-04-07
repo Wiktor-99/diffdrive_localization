@@ -1,0 +1,43 @@
+{
+	"dockerFile": "Dockerfile",
+	"build": {
+		"args": {
+			"WORKSPACE": "${containerWorkspaceFolder}"
+		}
+	},
+	"remoteUser": "ros",
+	"runArgs": [
+		"--network=host",
+		"--cap-add=SYS_PTRACE",
+		"--security-opt=seccomp:unconfined",
+		"--security-opt=apparmor:unconfined",
+		"--volume=/tmp/.X11-unix:/tmp/.X11-unix",
+		"--volume=/mnt/wslg:/mnt/wslg",
+		"--ipc=host",
+		"--device=/dev/dri"
+	],
+	"containerEnv": {
+		"DISPLAY": "${localEnv:DISPLAY}",
+		"WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
+		"XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}",
+		"PULSE_SERVER": "${localEnv:PULSE_SERVER}",
+		"LIBGL_ALWAYS_SOFTWARE": "1",
+		"QT_X11_NO_MITSHM": "1",
+		"RMW_IMPLEMENTATION":"rmw_cyclonedds_cpp",
+        "ROS_DOMAIN_ID": "42"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions":[
+                "ms-vscode.cpptools",
+                "ms-vscode.cpptools-themes",
+                "twxs.cmake",
+                "donjayamanne.python-extension-pack",
+                "eamodio.gitlens",
+                "ms-iot.vscode-ros"
+            ]
+		}
+	}
+}
+
+
