@@ -41,4 +41,16 @@ def generate_launch_description():
         output="screen",
     )
 
-    return LaunchDescription(declared_arguments + [ign_bridge, gazebo])
+    rviz_config_file = PathJoinSubstitution(
+        [FindPackageShare("diffdrive_bringup"), 'rviz', 'localization.rviz'])
+
+    rviz2 = Node(
+        package="rviz2",
+        executable="rviz2",
+        name="rviz2",
+        arguments=["-d", rviz_config_file],
+        output="screen",
+    )
+
+
+    return LaunchDescription(declared_arguments + [ign_bridge, gazebo, rviz2])
