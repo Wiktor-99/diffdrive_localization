@@ -36,7 +36,7 @@
     <joint name="base_joint" type="fixed">
         <parent link="base_footprint" />
         <child link="base_link" />
-        <origin xyz="0.0 0.0  ${wheel_radius + base_height/2}" rpy="0 0 0" />
+        <origin xyz="0.0 0.0  ${wheel_radius + base_height/2 - wheel_zoff}" rpy="0 0 0" />
     </joint>
 
     <xacro:macro name="wheel" params="prefix x_reflect y_reflect">
@@ -97,26 +97,6 @@
     <gazebo reference="front_caster">
         <mu>0.001</mu>
         <mu2>0.001</mu2>
-    </gazebo>
-
-    <gazebo>
-        <plugin filename="libignition-gazebo-diff-drive-system.so" name="ignition::gazebo::systems::DiffDrive">
-            <left_joint>drivewhl_l_joint</left_joint>
-            <right_joint>drivewhl_r_joint</right_joint>
-            <wheel_separation>1.2</wheel_separation>
-            <wheel_radius>0.1</wheel_radius>
-            <odom_publish_frequency>30</odom_publish_frequency>
-            <frame_id>odom</frame_id>
-            <child_frame_id>base_footprint</child_frame_id>
-            <odom_topic>odom</odom_topic>
-            <topic>cmd_vel</topic>
-            <tf_topic>tf</tf_topic>
-        </plugin>
-        <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
-            <topic>joint_states</topic>
-            <joint_name>drivewhl_l_joint</joint_name>
-            <joint_name>drivewhl_r_joint</joint_name>
-        </plugin>
     </gazebo>
 
     <link name="imu_link">
