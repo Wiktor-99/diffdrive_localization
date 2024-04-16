@@ -71,6 +71,39 @@
 
     <xacro:wheel prefix="drivewhl_l" x_reflect="-1" y_reflect="1" />
     <xacro:wheel prefix="drivewhl_r" x_reflect="-1" y_reflect="-1" />
+
+    <ros2_control name="IgnitionSystem" type="system">
+        <hardware>
+        <plugin>ign_ros2_control/IgnitionSystem</plugin>
+        </hardware>
+        <joint name="drivewhl_l_joint">
+        <command_interface name="velocity">
+            <param name="min">-1</param>
+            <param name="max">1</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        </joint>
+        <joint name="drivewhl_r_joint">
+        <command_interface name="velocity">
+            <param name="min">-1</param>
+            <param name="max">1</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        </joint>
+    </ros2_control>
+
+    <gazebo>
+        <plugin filename="ign_ros2_control-system" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+            <parameters>$(find diffdrive_bringup)/config/controllers.yaml</parameters>
+            <ros>
+                <remapping>/diff_drive_controller/cmd_vel_unstamped:=/cmd_vel</remapping>
+                <remapping>/diff_drive_controller/odom:=/odom</remapping>
+            </ros>
+        </plugin>
+    </gazebo>
+
     <link name="front_caster">
         <visual>
             <geometry>
@@ -123,11 +156,12 @@
 
     <gazebo reference="imu_link">
         <sensor name="imu_sensor" type="imu">
-            <plugin filename="libignition-gazebo-imu-system.so" name="ignition::gazebo::systems::Imu" />
+            <plugin filename="libignition-gazebo-imu-system.so" name="ignition::gazebo::systems::Imu"/>
             <always_on>1</always_on>
             <update_rate>10</update_rate>
             <visualize>true</visualize>
             <topic>imu</topic>
+            <gz_frame_id>imu_link</gz_frame_id>
         </sensor>
     </gazebo>
 </robot>
