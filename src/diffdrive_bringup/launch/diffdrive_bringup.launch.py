@@ -4,15 +4,12 @@ from launch.actions import (
     IncludeLaunchDescription,
     ExecuteProcess
 )
-from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     LaunchConfiguration,
-    PathJoinSubstitution,
     Command
 )
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 import os
 
 
@@ -22,39 +19,28 @@ def generate_launch_description():
             "world",
             default_value="default.sdf",
             description="Robot controller to start.",
-        ),
-        DeclareLaunchArgument(
-            name="use_sim",
-            default_value="True",
-            description='Set to "true" to run simulation',
         )
     ]
 
-    ign_gazebo_launch = PathJoinSubstitution(
-        [FindPackageShare("ros_ign_gazebo"), 'launch', 'ign_gazebo.launch.py'])
-
     gazebo = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ign_gazebo_launch]),
-         launch_arguments=[
-            ('ign_args', [LaunchConfiguration('world'),' -v 4'])])
+        os.path.join(get_package_share_directory("ros_ign_gazebo"), 'launch', 'ign_gazebo.launch.py'),
+         launch_arguments=[('ign_args', [LaunchConfiguration('world'),' -v 4'])]
+    )
 
-    ign_bridge = os.path.join(get_package_share_directory('diffdrive_bringup'), 'config', 'ign_bridge.yaml')
+    diffdrive_bringup_path = get_package_share_directory('diffdrive_bringup')
     ign_bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
         name="ign_bridge",
-        ros_arguments=["-p", f"config_file:={ign_bridge}"],
+        ros_arguments=["-p", f"config_file:={os.path.join(diffdrive_bringup_path, 'config', 'ign_bridge.yaml')}"],
         output="screen",
     )
-
-    rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("diffdrive_bringup"), 'rviz', 'localization.rviz'])
 
     rviz2 = Node(
         package="rviz2",
         executable="rviz2",
         name="rviz2",
-        arguments=["-d", rviz_config_file],
+        arguments=["-d", os.path.join(diffdrive_bringup_path, 'rviz', 'localization.rviz')],
         output="screen",
     )
 
@@ -72,7 +58,9 @@ def generate_launch_description():
         executable="robot_state_publisher",
         output="both",
         parameters=[
-            {'robot_description': Command(['xacro ', xacro_file]) }
+            {'robot_description': Command(['xacro ', xacro_file]) },
+            {'use_sim_time' : True}
+
         ],
     )
 
@@ -82,7 +70,7 @@ def generate_launch_description():
         name='ekf_filter_node',
         output='screen',
         parameters=[
-            os.path.join(get_package_share_directory('diffdrive_bringup'), 'config', 'ekf.yaml'),
+            os.path.join(diffdrive_bringup_path, 'config', 'ekf.yaml'),
             {'use_sim_time' : True}
         ]
     )
