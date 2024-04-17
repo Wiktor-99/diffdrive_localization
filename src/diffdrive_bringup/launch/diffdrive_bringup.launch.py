@@ -1,8 +1,7 @@
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
-    IncludeLaunchDescription,
-    ExecuteProcess
+    IncludeLaunchDescription
 )
 from launch.substitutions import (
     LaunchConfiguration,
@@ -75,29 +74,13 @@ def generate_launch_description():
         ]
     )
 
-    load_joint_state_controller = ExecuteProcess(
-        name="activate_joint_state_broadcaster",
-        cmd=["ros2", "control", "load_controller", "--set-state", "active", "joint_state_broadcaster"],
-        shell=False,
-        output="screen",
-    )
-
-    load_joint_trajectory_controller = ExecuteProcess(
-        name="activate_diff_drive_controller",
-        cmd=[ "ros2", "control", "load_controller", "--set-state", "active", "diff_drive_controller"],
-        shell=False,
-        output="screen",
-    )
-
     return LaunchDescription(
         declared_arguments +
         [
             ign_bridge,
             gazebo,
-            gazebo_spawn_robot,
             robot_state_publisher,
+            gazebo_spawn_robot,
             robot_localization_node,
-            load_joint_state_controller,
-            load_joint_trajectory_controller,
             rviz2
         ])
