@@ -28,7 +28,6 @@ RUN sudo wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrin
     bash-completion \
     ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
     ros-$ROS_DISTRO-xacro \
-    ros-$ROS_DISTRO-joint-state-publisher-gui \
     ros-$ROS_DISTRO-ros-ign-bridge \
     ros-$ROS_DISTRO-teleop-twist-keyboard \
     ros-$ROS_DISTRO-teleop-twist-joy \
