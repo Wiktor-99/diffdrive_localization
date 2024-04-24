@@ -14,10 +14,11 @@ import os
 
 
 def generate_launch_description():
+    diffdrive_bringup_path = get_package_share_directory('diffdrive_bringup')
     declared_arguments = [
         DeclareLaunchArgument(
             "world",
-            default_value="default.sdf",
+            default_value=os.path.join(diffdrive_bringup_path, "worlds", "default_world.sdf"),
             description="Robot controller to start.",
         )
     ]
@@ -27,7 +28,6 @@ def generate_launch_description():
          launch_arguments=[('ign_args', [LaunchConfiguration('world'),' -v 4'])]
     )
 
-    diffdrive_bringup_path = get_package_share_directory('diffdrive_bringup')
     ign_bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
